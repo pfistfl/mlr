@@ -45,7 +45,8 @@ makeRLearner.fcregr.nnetar = function() {
     properties = c("numerics", "quantile"),
     name = "Neural Network Time Series Forecasts",
     short.name = "nnetar",
-    note = "All variables besides the target will be passed to the xreg argument. Because R performs partial mapping on arguments, argument values should be passed through par.vals"
+    note = "All variables besides the target will be passed to the xreg argument. Because R performs partial mapping on arguments, argument values should be passed through par.vals",
+    callees = c("nnetar", "forecast.nnetar")
   )
 }
 #'@export

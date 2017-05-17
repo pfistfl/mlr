@@ -59,7 +59,8 @@ makeRLearner.fcregr.auto.arima = function() {
     properties = c("numerics", "quantile"),
     name = "Automated Autoregressive Integrated Moving Average Model Selection",
     short.name = "auto.arima",
-    note = "All variables besides the target will be passed to the xreg argument."
+    note = "All variables besides the target will be passed to the xreg argument.",
+    callees = c("auto.arima", "forecast.Arima")
   )
 }
 

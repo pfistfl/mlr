@@ -30,7 +30,8 @@ makeRLearner.mfcregr.BigVAR = function() {
     properties = "numerics",
     name = "Vector AutoRegression Models with Endogeneous and Exogenous Variables",
     short.name = "BigVAR",
-    note = "Because of argument p and R's partial matching, arguments in makeLearner must be passed to par.vals as a list. dates are automatically passed to the date argument."
+    note = "Because of argument p and R's partial matching, arguments in makeLearner must be passed to par.vals as a list. dates are automatically passed to the date argument.",
+    callees = c("constructModel", "cv.BigVAR")
   )
 }
 

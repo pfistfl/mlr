@@ -110,13 +110,18 @@ forecast.WrappedModel = function(object, newdata = NULL, task, h = 10, ...) {
     diff.time = difftime(row.dates[2], row.dates[1], units = "auto")
     start = row.dates[length(row.dates)] + diff.time
     end = start + diff.time * h
-    if (is.null(newdata)) {
-      group.names = unique(data[[proc.vals$grouping]])
+    if (!is.null(proc.vals$grouping)) {
+      if (is.null(newdata)) {
+        group.names = unique(data[[proc.vals$grouping]])
+      } else {
+        group.names = unique(newdata[[proc.vals$grouping]])
+      }
+      row.names = rep(seq.POSIXt(start, end - 1, by = diff.time), each = length(group.names))
+      row.names = paste0(rep(group.names, h),".", row.names)
     } else {
-      group.names = unique(newdata[[proc.vals$grouping]])
+      row.names = seq.POSIXt(start, end - 1, by = diff.time)
     }
-    row.names = rep(seq.POSIXt(start, end - 1, by = diff.time), each = length(group.names))
-    row.names = paste0(rep(group.names, h),".", row.names)
+
   } else {
     row.names = row.names(truth)
   }
@@ -162,13 +167,24 @@ forecast.WrappedModel = function(object, newdata = NULL, task, h = 10, ...) {
 
 makeForecast = function(.data, .newdata, .proc.vals, .h, .td, .model, ...) {
   forecasts = list()[1:I(.h)]
-  group.data =  unique(.data[,.proc.vals$grouping, with = FALSE])
+  if (!is.null(.proc.vals$grouping))
+    group.data = unique(.data[,.proc.vals$grouping, with = FALSE])
 
   for (i in seq_len(.h)) {
-    .data = rbindlist(l = list(.data[,c(.proc.vals$cols, .proc.vals$target, .proc.vals$grouping), with = FALSE], group.data), fill = TRUE)
-    setkeyv(.data, .proc.vals$grouping)
+    if (!is.null(.proc.vals$grouping)) {
+      .data = rbindlist(l = list(.data[,c(.proc.vals$cols, .proc.vals$target, .proc.vals$grouping), with = FALSE], group.data), fill = TRUE)
+      setkeyv(.data, .proc.vals$grouping)
+    } else if (!is.null(.proc.vals$cols)) {
+      .data = do.call(rbind, list(.data[, c(.proc.vals$cols, .proc.vals$target)], rep(NA, ncol(.data))))
+    } else {
+      .data = rbindlist(list(.data[, c(.proc.vals$target), with = FALSE], data.table(NA)), use.names = FALSE)
+    }
     # The dates here will be thrown away later
-    times = .data[, .SD[,as.POSIXct("1992-01-14") + 1:.N], by = c(.proc.vals$grouping)][, c(V1), drop = TRUE]
+    if (!is.null(.proc.vals$grouping)) {
+      times = .data[, .SD[,as.POSIXct("1992-01-14") + 1:.N], by = c(.proc.vals$grouping)][, c(V1), drop = TRUE]
+    } else {
+      times = as.POSIXct("1992-01-14") + 1:(nrow(.data))
+    }
     .proc.vals$date.col = times
     # get lag structure
     lagdiff.func = function(...) {
@@ -177,11 +193,19 @@ makeForecast = function(.data, .newdata, .proc.vals, .h, .td, .model, ...) {
     data.lag = do.call(lagdiff.func, .proc.vals)
     data.step = data.table(data.lag)
     data.step = data.step[complete.cases(data.step),]
-    data.step = data.step[, .SD[.N,], by = c(.proc.vals$grouping)]
+    if (!is.null(.proc.vals$grouping)){
+      data.step = data.step[, .SD[.N,], by = c(.proc.vals$grouping)]
+    } else {
+      data.step = data.step[nrow(data.step), ]
+    }
     data.step = data.step[, -c(.td$target), with = FALSE]
     if (!is.null(.newdata)) {
       .newdata = data.table(.newdata)
-      data.step = merge(data.step, .newdata[,.SD[i,] , by = c(.proc.vals$grouping)], by = "Ticker")
+      if (!is.null(.proc.vals$grouping)) {
+        data.step = merge(data.step, .newdata[,.SD[i,] , by = c(.proc.vals$grouping)], by = .proc.vals$grouping)
+      } else {
+        data.step = cbind(data.step, .newdata[i, ])
+      }
     }
     # predict
     pred = predict(.model, newdata = as.data.frame(data.step))
@@ -195,7 +219,7 @@ makeForecast = function(.data, .newdata, .proc.vals, .h, .td, .model, ...) {
     } else if (pred$predict.type == "se") {
       forecasts[[i]] = pred$data
     }
-    .data[is.na(.proc.vals$target), c(.proc.vals$target) := getPredictionResponse(pred)]
+    .data[is.na(get(.proc.vals$target)), c(.proc.vals$target) := getPredictionResponse(pred)]
   }
 
   p = do.call(rbind, forecasts)

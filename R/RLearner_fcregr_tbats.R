@@ -66,7 +66,8 @@ makeRLearner.fcregr.tbats = function() {
     properties = c("numerics", "quantile"),
     name = "Exponential smoothing state space model with Box-Cox transformation,
     ARMA errors, Trend and Seasonal Fourier components",
-    short.name = "tbats"
+    short.name = "tbats",
+    callees = c("tbats", "forecast.tbats")
   )
 }
 

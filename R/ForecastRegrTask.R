@@ -21,18 +21,18 @@ makeForecastRegrTask = function(id = deparse(substitute(data)), data, target,
   # 1. Exist
   # 2. Are unique
   # 3. Follow POSIXct convention
-  dates = data[, date.col, drop = FALSE]
+  dates = data[, date.col, drop = TRUE]
   if (check.data) {
     assertNumeric(data[[target]], any.missing = FALSE, finite = TRUE, .var.name = target)
     if (any(duplicated(dates)))
       stop(catf("Multiple observations for %s. Dates must be unique.", dates[any(duplicated(dates)), ]))
-    if (!is.POSIXt(dates[, 1]))
+    if (!is.POSIXt(dates))
       stop(catf("Dates are of type %s, but must be in a POSIXt format", class(dates[, 1])))
   }
   if (fixup.data != "no") {
     if (is.integer(data[[target]]))
       data[[target]] = as.double(data[[target]])
-    if (is.unsorted(dates[, 1])) {
+    if (is.unsorted(dates)) {
       if (fixup.data == "warn")
         warning("Dates and data will be sorted in ascending order")
       date.order = order(dates)

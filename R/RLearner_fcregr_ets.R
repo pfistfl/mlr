@@ -49,7 +49,8 @@ makeRLearner.fcregr.ets = function() {
     ),
     properties = c("numerics", "quantile"),
     name = "Exponential smoothing state space model",
-    short.name = "ets"
+    short.name = "ets",
+    callees = c("ets", "forecast.ets")
   )
 }
 

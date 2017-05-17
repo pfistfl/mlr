@@ -61,7 +61,9 @@ makeRLearner.fcregr.garch = function() {
     ),
     properties = c("numerics", "quantile"),
     name = "Generalized AutoRegressive Conditional Heteroskedasticity",
-    short.name = "garch"
+    short.name = "garch",
+    callees = c("ugarchspec", "ugarchfit", "ugarchforecast"),
+    note = ""
   )
 }
 #'@export
@@ -124,5 +126,7 @@ predictLearner.fcregr.garch = function(.learner, .model, .newdata, ...) {
     colnames(p.quantile) = stri_paste("quantile", .model$learner$par.vals$probs )
     p = cbind(p.mean, p.quantile)
   }
+  if (any(is.na(p)))
+    stop("Prediction resulted in NA")
   return(p)
 }

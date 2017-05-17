@@ -66,7 +66,8 @@ makeRLearner.fcregr.bats = function() {
     properties = c("numerics", "quantile"),
     name = "Exponential smoothing state space model with Box-Cox transformation,
     ARMA errors, Trend and Seasonal components",
-    short.name = "bats"
+    short.name = "bats",
+    callees = c("bats", "forecast.bats")
   )
 }
 

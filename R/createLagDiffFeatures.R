@@ -49,8 +49,8 @@ createLagDiffFeatures = function(obj, target = character(0L), lag = 0L, differen
   na.pad = FALSE, return.nonlag = FALSE, grouping = NULL, date.col) {
 
   assertInteger(lag, lower = 0L, upper = 1000L)
-  assertInteger(difference, lower = 0L, upper = 1000L, len = 1L)
-  assertInteger(difference.lag, lower = 0L, upper = 1000L, len = 1L)
+  assertInteger(difference, lower = 0L, upper = 1000L)
+  assertInteger(difference.lag, lower = 0L, upper = 1000L)
   assertInteger(seasonal.lag, lower = 0L, upper = 1000L)
   assertInteger(seasonal.difference, lower = 0L, upper = 1000L, len = 1L)
   assertInteger(seasonal.difference.lag, lower = 0L, upper = 1000L, len = 1L)
@@ -80,7 +80,7 @@ createLagDiffFeatures.data.frame = function(obj, target = character(0L), lag = 0
 
   if (!is.null(cols)) {
     if (!(target %in% cols))
-      cols = c(cols, target)
+      #cols = c(cols, target)
     assertSubset(cols, work.cols)
     x = data[, c(cols, grouping), with = FALSE]
   } else {
