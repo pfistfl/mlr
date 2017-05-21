@@ -88,7 +88,9 @@ print.FDATask = function(x, ...) {
 # Called in makeFDAClasifTask / makeFDARegrTask
 # Create new fields called fd.features and fd.grids for functional data (the same is done in makeFDATask)
 updateFDATaskDesc = function(fd.features, fd.grids, feat.remain) {
-  # to make subset(FDATask, features = 1:10) work for example, we need to adapt the fd.features and fd.grids according to the subseted global feature index.
+
+  # to make subset(FDATask, features = 1:10) work for example, we need to adapt the fd.features and fd.grids
+  # according to the subseted global feature index.
   a.features = setNames(lapply(names(fd.features), function(fdn) {
     fd.features[[fdn]][fd.features[[fdn]] %in% feat.remain]
   }), names(fd.features))

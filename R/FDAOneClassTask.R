@@ -42,7 +42,7 @@ print.FDAOneClassTask = function(x, ...) {
   catf("Positive/Normal class: %s", x$task.desc$positive)
   catf("Negative/Anomaly class: %s", x$task.desc$negative)
   catf("Note: As oneclass classification problem is an unsupervised learning problem,
-    the label TRUE and FALSE aren't the ground truth, if the class column is automatecially created by mlR,
+    the label TRUE and FALSE aren't the ground truth, if the class column is automaticially created by mlR,
     but rather an assumption of the oneclass classification problem.")
 }
 
