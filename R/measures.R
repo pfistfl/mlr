@@ -130,7 +130,7 @@ measureMSE = function(truth, response) {
 #' @rdname measures
 #' @format none
 rmse = makeMeasure(id = "rmse", minimize = TRUE, best = 0, worst = Inf,
-  properties = c("regr", "req.pred", "req.truth"),
+  properties = c("regr", "fdaregr", "req.pred", "req.truth"),
   name = "Root mean squared error",
   note = "The RMSE is aggregated as sqrt(mean(rmse.vals.on.test.sets^2)). If you don't want that, you could also use `test.mean`.",
   fun = function(task, model, pred, feats, extra.args) {
@@ -207,7 +207,7 @@ measureMAE = function(truth, response) {
 #' @rdname measures
 #' @format none
 medae = makeMeasure(id = "medae", minimize = TRUE, best = 0, worst = Inf,
-  properties = c("regr", "req.pred", "req.truth"),
+  properties = c("regr", "fdaregr", "req.pred", "req.truth"),
   name = "Median of absolute errors",
   note = "Defined as: median(abs(response - truth)).",
   fun = function(task, model, pred, feats, extra.args) {
@@ -449,7 +449,7 @@ measureSpearmanRho = function(truth, response) {
 #' @rdname measures
 #' @format none
 mmce = makeMeasure(id = "mmce", minimize = TRUE, best = 0, worst = 1,
-  properties = c("oneclass", "classif", "classif.multi", "req.pred", "req.truth"),
+  properties = c("oneclass", "classif", "classif.multi", "fdaclassif", "req.pred", "req.truth"),
   name = "Mean misclassification error",
   note = "Defined as: mean(response != truth)",
   fun = function(task, model, pred, feats, extra.args) {
@@ -468,7 +468,7 @@ measureMMCE = function(truth, response) {
 #' @rdname measures
 #' @format none
 acc = makeMeasure(id = "acc", minimize = FALSE, best = 1, worst = 0,
-  properties = c("classif", "classif.multi", "req.pred", "req.truth"),
+  properties = c("classif", "classif.multi", "fdaclassif", "req.pred", "req.truth"),
   name = "Accuracy",
   note = "Defined as: mean(response == truth)",
   fun = function(task, model, pred, feats, extra.args) {
@@ -1011,7 +1011,7 @@ measureFN = function(truth, response, negative) {
 #' @rdname measures
 #' @format none
 tpr = makeMeasure(id = "tpr", minimize = FALSE, best = 1, worst = 0,
-  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  properties = c("oneclass", "classif", "fdaclassif", "req.pred", "req.truth"),
   name = "True positive rate",
   note = "Percentage of correctly classified observations in the positive class. Also called hit rate, recall or sensitivity.",
   fun = function(task, model, pred, feats, extra.args) {
@@ -1049,7 +1049,7 @@ measureTNR = function(truth, response, negative) {
 #' @rdname measures
 #' @format none
 fpr = makeMeasure(id = "fpr", minimize = TRUE, best = 0, worst = 1,
-  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  properties = c("oneclass", "classif", "fdaclassif", "req.pred", "req.truth"),
   name = "False positive rate",
   note = "Percentage of misclassified observations in the positive class. Also called false alarm rate or fall-out.",
   fun = function(task, model, pred, feats, extra.args) {
