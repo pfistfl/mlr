@@ -1445,7 +1445,7 @@ mcp = makeMeasure(id = "mcp", minimize = TRUE, best = 0, worst = Inf,
 #' @rdname measures
 #' @format none
 db = makeMeasure(id = "db", minimize = TRUE, best = 0, worst = Inf,
-  properties = c("oneclass", "cluster", "req.pred", "req.feats"),
+  properties = c("oneclass", "cluster", "req.pred", "req.feats", "fdaoneclass"),
   name = "Davies-Bouldin cluster separation measure",
   note = "Ratio of the within cluster scatter, to the between cluster separation, averaged over the clusters. See `?clusterSim::index.DB`.",
   fun = function(task, model, pred, feats, extra.args) {

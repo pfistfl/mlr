@@ -148,12 +148,13 @@ getDefaultMeasure = function(x) {
   else
     x
   switch(type,
-    oneclass = db,
     classif = mmce,
     fdaclassif = mmce,
     cluster = db,
     regr = mse,
     fdaregr = mse,
+    oneclass = db,
+    fdaoneclass = db,
     surv = cindex,
     costsens = mcp,
     multilabel = multilabel.hamloss
