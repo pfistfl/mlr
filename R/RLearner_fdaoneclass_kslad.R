@@ -12,7 +12,6 @@ makeRLearner.fdaoneclass.kslad = function() {
       makeIntegerLearnerParam(id = "max.iter", lower = 0L, upper = Inf, default = 5L),
       makeDiscreteLearnerParam(id = "init", default = "kmeans", values = c("kmeans", "random", "user")),
       makeUntypedLearnerParam("init.shapes", default = NULL, requires = quote(init == "user")),
-      makeDiscreteLearnerParam("loss", default = "linear", values = c("linear", "squared")),
       makeNumericLearnerParam("convergence.eps", default = 10^-3, upper = Inf, lower = 0),
       makeLogicalLearnerParam("show.info", default = FALSE) ,
       makeDiscreteLearnerParam("qpsolver", default = "ipop", values = c("ipop", "ipopCpp")),

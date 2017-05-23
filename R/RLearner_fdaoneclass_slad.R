@@ -30,7 +30,7 @@ trainLearner.fdaoneclass.slad = function(.learner, .task, .subset, .weights = NU
   x = getTaskFeatureNames(.task)
   d = getTaskData(.task, .subset)[, x]
   # Train model
-  kslad::learnKernelAnomalyModel(data = d, ...)
+  kslad::learnLinearAnomalyModel(data = d, ...)
 }
 
 #' @export
