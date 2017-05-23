@@ -16,7 +16,7 @@ makeRLearner.oneclass.svdd = function() {
       makeNumericLearnerParam(id = "offset", default = 1,
         requires = quote(kernel %in% c("polydot", "tanhdot")))
     ),
-    properties =  c("oneclass", "numerics", "factors", "weights"),
+    properties =  c("oneclass", "numerics"),
     name = "one-class Support Vector Data Description",
     short.name = "one-class svdd",
     callees = "svdd"
@@ -39,8 +39,8 @@ trainLearner.oneclass.svdd = function(.learner, .task, .subset, .weights = NULL,
 
 #' @export
 predictLearner.oneclass.svdd = function(.learner, .model, .newdata, ...) {
-  # svm currently can't predict probabilities only response
-  p = predict(.model$learner.model, newdata = .newdata, ...)
+  # svdd currently can't predict probabilities only response
+  p = kslad::predict.kSVDD(.model$learner.model, newdata = .newdata, ...)
   if (.learner$predict.type == "response") {
     p = as.factor(p)
     levels(p) = union(levels(p), .model$task.desc$class.levels)
