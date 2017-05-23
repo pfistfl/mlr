@@ -10,7 +10,7 @@ checkLearnerBeforeTrain = function(task, learner, weights) {
   # a wrapper for normal classif and regr learners? more code for user and and a bit unintuitive...
   # Currently td$type != learner$type will fail for all FDA learners and task combination, so we hack it here
   # The idea is if td$type != learner$type is true and it is neither a fdaclassif or fdaregr then an error is   # thrown. We mainly enable this because we want the normal learners to work for FDATask !!!!!
-  if (td$type != learner$type && !(td$type == "fdaclassif" && learner$type == "classif") && !(td$type == "fdaregr" && learner$type == "regr")) {
+  if (td$type != learner$type && !(td$type == "fdaclassif" && learner$type == "classif") && !(td$type == "fdaregr" && learner$type == "regr")&& !(td$type == "fdaoneclass" && learner$type == "oneclass")) {
     stopf("Task '%s' is '%s', but learner '%s' is for '%s'!", td$id, td$type, learner$id, learner$type)
   }
 

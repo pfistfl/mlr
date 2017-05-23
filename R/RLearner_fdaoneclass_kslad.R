@@ -1,6 +1,6 @@
 #' @export
-makeRLearner.oneclass.kslad = function() {
-  makeRLearnerFDAOneClass(
+makeRLearner.fdaoneclass.kslad = function() {
+  makeRLearnerOneClass(
     cl = "fdaoneclass.kslad",
     package = "kslad",
     par.set = makeParamSet(
@@ -8,7 +8,7 @@ makeRLearner.oneclass.kslad = function() {
       makeNumericLearnerParam(id = "k", lower = 0, upper = 1, default = 0.03),
       makeNumericLearnerParam(id = "l", lower = 0, upper = 1, default = 0.2),
       makeDiscreteLearnerParam(id = "step", default = "pegasos", values = c("pegasos", "sqrt", "user")),
-      makeUntypedLearnerParam("init.shapes", default = NULL, requires = quote(step == "user")),
+      makeUntypedLearnerParam("step.size", default = NULL, requires = quote(step == "user")),
       makeIntegerLearnerParam(id = "max.iter", lower = 0L, upper = Inf, default = 5L),
       makeDiscreteLearnerParam(id = "init", default = "kmeans", values = c("kmeans", "random", "user")),
       makeUntypedLearnerParam("init.shapes", default = NULL, requires = quote(init == "user")),
@@ -27,8 +27,8 @@ makeRLearner.oneclass.kslad = function() {
       makeNumericLearnerParam(id = "offset", default = 1,
         requires = quote(kernel %in% c("polydot", "tanhdot")))
     ),
-    properties =  c("fdaoneclass", "numerics"),
-    name = "One-Class Kernelized Anomaly Detection and Shapelet Learning",
+    properties =  c("oneclass", "numerics"),
+    name = "Kernelized Anomaly Detection and Shapelet Learning",
     short.name = "fdaoneclass klad",
     callees = "kslad"
   )
