@@ -77,3 +77,18 @@ test_that("FDA_subsetTask", {
   expect_equal(length(st.gp$task.desc$fd.grids$fd1), 10L)
 })
 
+test_that("FDAOneClassTask", {
+  gunpoint = getTaskData(gunpoint.task, target.extra = TRUE)
+  expect_message(makeFDAOneClassTask(data = gunpoint$data, fd.features = list(fd = 2:3)))
+  task2 = makeFDAOneClassTask(data = gunpoint$data, fd.features = list(fd = 2:3))
+  expect_class(task2, "FDAOneClassTask")
+  expect_equal(task2$type, "fdaoneclass")
+  expect_length(task2$task.desc$fd.features$fd, 2L)
+
+  task3 = makeFDAOneClassTask(data = getTaskData(gunpoint.task), target = "X1",
+    fd.features = list(fd1 = 2:3, fd2 = 7:10))
+  expect_class(task3, "FDAOneClassTask")
+  expect_equal(task3$type, "fdaoneclass")
+  expect_length(unlist(task3$task.desc$fd.features), 6L)
+  expect_equal(task3$task.desc$fd.features$fd1, c("X2", "X3"))
+})

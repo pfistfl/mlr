@@ -1,9 +1,10 @@
 #' @title Functional data OneClass Classification task.
 #'
 #' @description
-#' Create a functional data oneclass-classification task. This means that some features
-#' in the task will be so-called functional features,
-#' measured on a grid or time scale. Different functional features might come from
+#' Create a functional data oneclass-classification task. It is similar to traditional
+#' oneclass-tasks, but for use with functional features. This means that some features
+#' in the task will be so-called functional features, measured on a grid or time scale.
+#' Different functional features might come from
 #' different sensors for example.
 #'
 #' @inheritParams Task
