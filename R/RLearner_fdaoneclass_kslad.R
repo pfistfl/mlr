@@ -44,15 +44,17 @@ trainLearner.fdaoneclass.kslad = function(.learner, .task, .subset, .weights = N
   if (base::length(kpar) == 0L) {
     kpar = list()
   }
-  kslad::learnLinearAnomalyModel(data = d, ...)
+  kslad::learnKernelAnomalyModel(data = d, kpar = kpar, ...)
 }
 
 #' @export
 predictLearner.fdaoneclass.kslad = function(.learner, .model, .newdata, ...) {
   # kslad currently can't predict probabilities only response
+  # browser()
   p = kslad::predict.kslad(.model$learner.model, newdata = .newdata, ...)
   if (.learner$predict.type == "response") {
-    p = as.factor(p)
-    levels(p) = union(levels(p), .model$task.desc$class.levels)
+    p = as.factor(as.logical(p))
+    # FIXME: This does not work right now:
+    # levels(p) = union(levels(p), .model$task.desc$class.levels)
   }
 }

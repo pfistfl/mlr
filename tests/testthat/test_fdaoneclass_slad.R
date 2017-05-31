@@ -5,10 +5,8 @@ test_that("FDA_fdaoneclass_slad behaves like original api", {
   requirePackagesOrSkip("kslad", default.method = "load")
   data(sampleCurves, package = "kslad")
 
-  # Use only 10 obs. for 5 classes, as knn training is really slow
+  # Use only 20 obs., training is really slow
   index = c(1:10, 30:40)
-  train = sampleCurves$train
-
 
   set.seed(getOption("mlr.debug.seed"))
   a1 = kslad::learnLinearAnomalyModel(sampleCurves$train[index, ], l = 0.1, c.reg = 0.2)
