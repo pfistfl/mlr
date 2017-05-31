@@ -38,7 +38,7 @@ predictLearner.fdaoneclass.slad = function(.learner, .model, .newdata, ...) {
   # kslad currently can't predict probabilities only response
   p = kslad::predict.slad(.model$learner.model, newdata = .newdata, ...)
   if (.learner$predict.type == "response") {
-    p = as.factor(p)
+    p = as.factor(as.logical(p))
     levels(p) = union(levels(p), .model$task.desc$class.levels)
   }
   return(p)
