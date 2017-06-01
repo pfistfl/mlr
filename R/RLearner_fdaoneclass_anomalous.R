@@ -10,9 +10,8 @@ makeRLearner.fdaoneclass.anomalous = function() {
       makeIntegerLearnerParam(id = "n", default = 10, lower = 0, upper = Inf),
       makeDiscreteLearnerParam(id = "method", default = "hdr", values = c("hdr")),
       makeLogicalLearnerParam("robust", default = TRUE),
-      makeLogicalLearnerParam("plot", default = TRUE),
-      makeLogicalLearnerParam("labels", default = TRUE),
-      makeDiscreteVectorLearnerParam("col")
+      makeLogicalLearnerParam("plot", default = TRUE, tunable = FALSE),
+      makeLogicalLearnerParam("labels", default = TRUE, tunable = FALSE)
     ),
     par.vals = list(plot = FALSE),
     properties =  c("oneclass", "numerics"),
@@ -24,38 +23,57 @@ makeRLearner.fdaoneclass.anomalous = function() {
 }
 
 #' @export
-trainLearner.fdaoneclass.anomalous = function(.learner, .task, .subset, .weights = NULL, ...) {
+trainLearner.fdaoneclass.anomalous = function(.learner, .task, .subset, .weights = NULL,
+  normalise, width, window, ...) {
+
   # Get Data
   feats = getTaskFeatureNames(.task)
   y = getTaskData(.task, .subset)[, feats]
+  args = learnerArgsToControl(list, normalise, width,  window)
 
   # Iterate over all functional features, extract and cbind
   grd = getTaskDesc(.task)$fd.grids
   feats = getTaskDesc(.task)$fd.features
-  z = sapply(names(grd), function(x) {
-    y = ts(t(y), start = min(grd[[x]]), end = max(grd[[x]]))
-    anomalous::tsmeasures(y, ...)
+  z = sapply(names(feats), function(x) {
+    browser()
+    y = ts(t(y[, feats[[x]]]), start = min(grd[[x]]), end = max(grd[[x]]))
+    do.call(anomalous::tsmeasures, c(y = list(y), args))
   }, simplify = FALSE)
   x = do.call("cbind", z)
-
-  # Jitter constant features, as it breaks the normalization
+  # Jitter constant features, as they break the normalization
   cst = apply(x, 2, function(x) length(unique(x))) == 1
-  x[, cst] = jitter(x[, cst], factor = 10^-2)
+  x[, cst] = jitter(x[, cst], factor = 10^-10)
 
-  anomaly_v2(x = x, ...)
+  anomaly2(x = x, ...)
 }
 
 #' @export
 predictLearner.fdaoneclass.anomalous = function(.learner, .model, .newdata, ...) {
-    testx = tsmeasures(.newdata)
-    anomaly_v2_predict(.model$learner.model, newdata = testx)
-  }
+
+  print((head(.newdata)))
+  # Get args from training
+  args = .model$learner.model$tsmargs
+  # Iterate over all functional features, extract and cbind
+  grd = .model$task.desc$fd.grids
+  feats = .model$task.desc$fd.features
+  z = sapply(names(feats), function(x) {
+    y = ts(t(.newdata[, feats[[x]]]), start = min(grd[[x]]), end = max(grd[[x]]))
+    do.call(anomalous::tsmeasures, c(y = list(y), args))
+  }, simplify = FALSE)
+  x = do.call("cbind", z)
+
+  # Jitter constant features, as they break the normalization
+  cst = apply(x, 2, function(x) length(unique(x))) == 1
+  x[, cst] = jitter(x[, cst], factor = 10^-10)
+
+  c(anomaly2_predict(.model$learner.model, newdata = x, ...), tsmargs = args)
+}
 
 
 # Reimplementations of TRAIN / TEST from anomalous.
 # The original implementations only predicts on training data.
 
-anomaly_v2 = function(x, n = 10, method = "hdr", robust = TRUE,
+anomaly2 = function(x, n = 10, method = "hdr", robust = TRUE,
   plot = TRUE, labels = TRUE, col) {
 
   # x: a matrix returned by `tsmeasures` function
@@ -67,9 +85,9 @@ anomaly_v2 = function(x, n = 10, method = "hdr", robust = TRUE,
   naomit.x = na.omit(x) # ignore missing values
   na.act = na.action(naomit.x)
   if (is.null(na.act)) {
-    avl = 1:nc
+    avl = seq_len(nc)
   } else {
-    avl = (1:nc)[-na.action(naomit.x)]
+    avl = seq_len(nc)[- na.action(naomit.x)]
   }
   method = match.arg(method)
   # robust PCA space (scaling version)
@@ -114,33 +132,35 @@ anomaly_v2 = function(x, n = 10, method = "hdr", robust = TRUE,
         col = col[2L], label = 1:length(idx), cex = 1.2)
     }
   }
-  return(structure(list(index = idx, scores = scoreswNA, hdr_results = hdrinfo, pca_results=rbt.pca)))
+
+  return(list(index = idx, scores = scoreswNA, hdr_results = hdrinfo,
+    pca_results=rbt.pca))
 }
 
 
+anomaly2_predict = function(anomaly_out_train, newdata, predicttype = "response"){
 
-anomaly_v2_predict = function(anomaly_out_train, newdata, predicttype = "response"){
-
+  n = nrow(newdata)
+  # Compute 2-D points from newdata
   pca_trafo = anomaly_out_train$pca_results$loadings
   center = anomaly_out_train$pca_results$center
   scale = anomaly_out_train$pca_results$scale
-  x_vec = apply(test_measures, 1, function(x) -((x-center)/scale) %*% pca_trafo[,1] )
-  y_vec = apply(test_measures, 1, function(x) -((x-center)/scale) %*% pca_trafo[,2] )
+  x_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 1] )
+  y_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 2] )
   test_scores = cbind(x_vec, y_vec)
 
-  dens_value = rep(0,dim(test_measures)[1] )
+  dens_value = rep(0, n)
+  for (i in seq_len(n)) {
 
-  for( i in 1:dim(test_measures)[1]){
+    min_x = min(which(anomaly_out_train$hdr_results$den$x >= test_scores[i, 1]))
+    min_y = min(which(anomaly_out_train$hdr_results$den$y >= test_scores[i, 2]))
 
-    min_x = min(which(anomaly_out_train$hdr_results$den$x >= test_scores[i,1]))
-    min_y = min(which(anomaly_out_train$hdr_results$den$y >= test_scores[i,2]) )
+    if(is.infinite(min_x)) {min_x = max(which(anomaly_out_train$hdr_results$den$x <= test_scores[i, 1]))}
+    if(is.infinite(min_y)) {min_y = max(which(anomaly_out_train$hdr_results$den$y <= test_scores[i, 2]))}
 
-    if(is.infinite(min_x)) {min_x = max(which(anomaly_out_train$hdr_results$den$x <= test_scores[i,1]))}
-    if(is.infinite(min_y)) {min_y = max(which(anomaly_out_train$hdr_results$den$y <= test_scores[i,2]) )}
-
-    dens_value[i] = anomaly_out_train$hdr_results$den$z[min_x,min_y]
+    dens_value[i] = anomaly_out_train$hdr_results$den$z[min_x, min_y]
   }
 
-  names(dens_value) = seq(1:dim(test_measures)[1])
-  return(structure(list(f_density=dens_value, test_scores=test_scores)))
+  names(dens_value) = seq_len(n)
+  return(list(f_density = dens_value, test_scores = test_scores))
 }
