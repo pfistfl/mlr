@@ -46,7 +46,13 @@
 #' print(calculateConfusionMatrix(r$pred))
 
 calculateConfusionMatrix = function(pred, relative = FALSE, sums = FALSE) {
-  checkPrediction(pred, task.type = "classif", check.truth = TRUE, no.na = TRUE)
+  if (pred$task.desc$type %in% c("oneclass", "fdaoneclass")) {
+    ttype = pred$task.desc$type
+  } else {
+    ttype = "classif"
+  }
+  print(ttype)
+  checkPrediction(pred, task.type = ttype, check.truth = TRUE, no.na = TRUE)
   assertFlag(relative)
   assertFlag(sums)
   cls = getTaskClassLevels(pred$task.desc)

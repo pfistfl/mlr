@@ -54,7 +54,7 @@ featperc = makeMeasure(id = "featperc", minimize = TRUE, best = 0, worst = 1,
 #' @rdname measures
 #' @format none
 timetrain = makeMeasure(id = "timetrain", minimize = TRUE, best = 0, worst = Inf,
-  properties = c("oneclass", "classif", "classif.multi", "multilabel", "regr", "surv", "costsens", "cluster", "req.model"),
+  properties = c("oneclass", "fdaoneclass", "classif", "classif.multi", "multilabel", "regr", "surv", "costsens", "cluster", "req.model"),
   name = "Time of fitting the model",
   fun = function(task, model, pred, feats, extra.args) {
     model$time
@@ -65,7 +65,7 @@ timetrain = makeMeasure(id = "timetrain", minimize = TRUE, best = 0, worst = Inf
 #' @rdname measures
 #' @format none
 timepredict = makeMeasure(id = "timepredict", minimize = TRUE, best = 0, worst = Inf,
-  properties = c("oneclass", "classif", "classif.multi", "multilabel", "regr", "surv", "costsens", "cluster", "req.pred"),
+  properties = c("oneclass", "oneclass", "classif", "classif.multi", "multilabel", "regr", "surv", "costsens", "cluster", "req.pred"),
   name = "Time of predicting test set",
   fun = function(task, model, pred, feats, extra.args) {
     pred$time
@@ -449,7 +449,7 @@ measureSpearmanRho = function(truth, response) {
 #' @rdname measures
 #' @format none
 mmce = makeMeasure(id = "mmce", minimize = TRUE, best = 0, worst = 1,
-  properties = c("oneclass", "classif", "classif.multi", "fdaclassif", "req.pred", "req.truth"),
+  properties = c("oneclass", "fdaoneclass", "classif", "classif.multi", "fdaclassif", "req.pred", "req.truth"),
   name = "Mean misclassification error",
   note = "Defined as: mean(response != truth)",
   fun = function(task, model, pred, feats, extra.args) {
@@ -468,7 +468,7 @@ measureMMCE = function(truth, response) {
 #' @rdname measures
 #' @format none
 acc = makeMeasure(id = "acc", minimize = FALSE, best = 1, worst = 0,
-  properties = c("classif", "classif.multi", "fdaclassif", "req.pred", "req.truth"),
+  properties = c("classif", "classif.multi", "fdaclassif", "req.pred", "req.truth", "fdaoneclass"),
   name = "Accuracy",
   note = "Defined as: mean(response == truth)",
   fun = function(task, model, pred, feats, extra.args) {
@@ -487,7 +487,7 @@ measureACC = function(truth, response) {
 #' @rdname measures
 #' @format none
 ber = makeMeasure(id = "ber", minimize = TRUE, best = 0, worst = 1,
-  properties = c("oneclass", "classif", "classif.multi", "req.pred", "req.truth"),
+  properties = c("oneclass", "classif", "classif.multi", "req.pred", "req.truth", "fdaoneclass"),
   name = "Balanced error rate",
   note = "Mean of misclassification error rates on all individual classes.",
   fun = function(task, model, pred, feats, extra.args) {
