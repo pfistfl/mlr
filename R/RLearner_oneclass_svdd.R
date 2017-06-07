@@ -42,7 +42,7 @@ predictLearner.oneclass.svdd = function(.learner, .model, .newdata, ...) {
   # svdd currently can't predict probabilities only response
   p = kslad::predict.kSVDD(.model$learner.model, newdata = .newdata, ...)
   if (.learner$predict.type == "response") {
-    p = as.factor(as.logical(p))
+    p = as.factor(p) # as.logical(p)
     levels(p) = union(levels(p), .model$task.desc$class.levels)
   }
   return(p)

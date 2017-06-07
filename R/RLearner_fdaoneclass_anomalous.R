@@ -35,7 +35,6 @@ trainLearner.fdaoneclass.anomalous = function(.learner, .task, .subset, .weights
   grd = getTaskDesc(.task)$fd.grids
   feats = getTaskDesc(.task)$fd.features
   z = sapply(names(feats), function(x) {
-    browser()
     y = ts(t(y[, feats[[x]]]), start = min(grd[[x]]), end = max(grd[[x]]))
     do.call(anomalous::tsmeasures, c(y = list(y), args))
   }, simplify = FALSE)
@@ -66,7 +65,13 @@ predictLearner.fdaoneclass.anomalous = function(.learner, .model, .newdata, ...)
   cst = apply(x, 2, function(x) length(unique(x))) == 1
   x[, cst] = jitter(x[, cst], factor = 10^-10)
 
-  c(anomaly2_predict(.model$learner.model, newdata = x, ...), tsmargs = args)
+  prd = anomaly2_predict(.model$learner.model, newdata = x, ...)
+
+  if (.learner$predict.type == "response") {
+    p = as.factor(as.numeric(prd$f_density <= 0.01))
+  }
+
+  return(p)
 }
 
 

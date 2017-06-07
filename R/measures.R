@@ -64,7 +64,7 @@ timetrain = makeMeasure(id = "timetrain", minimize = TRUE, best = 0, worst = Inf
 #' @rdname measures
 #' @format none
 timepredict = makeMeasure(id = "timepredict", minimize = TRUE, best = 0, worst = Inf,
-  properties = c("oneclass", "oneclass", "classif", "classif.multi", "multilabel", "regr", "surv", "costsens", "cluster", "req.pred"),
+  properties = c("oneclass", "fdaoneclass", "classif", "classif.multi", "multilabel", "regr", "surv", "costsens", "cluster", "req.pred"),
   name = "Time of predicting test set",
   fun = function(task, model, pred, feats, extra.args) {
     pred$time
@@ -460,6 +460,8 @@ mmce = makeMeasure(id = "mmce", minimize = TRUE, best = 0, worst = 1,
 #' @rdname measures
 #' @format none
 measureMMCE = function(truth, response) {
+  print(response)
+  print(truth)
   mean(response != truth)
 }
 

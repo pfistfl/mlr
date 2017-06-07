@@ -13,10 +13,26 @@
 #' @export
 #' @aliases FDAOneClassTask
 makeFDAOneClassTask = function(id = deparse(substitute(data)), data, target,
-  weights = NULL, blocking = NULL, positive = NA_character_, fixup.data = "warn",
+  weights = NULL, blocking = NULL, positive = NA_character_, negative, fixup.data = "warn",
   check.data = TRUE, fd.features = NULL, fd.grids = NULL) {
 
-  task = makeOneClassTask(id, data, target, weights, blocking, positive, fixup.data, check.data)
+  # positive needs to be a string, if it's a number convert it into string
+  assert(
+    checkString(positive),
+    checkNumber(positive)
+  )
+  if (isScalarNumeric(positive))
+    positive = as.character(positive)
+
+  # negative needs to be a string, if it's a number convert it into string
+  assert(
+    checkString(negative),
+    checkNumber(negative)
+  )
+  if (isScalarNumeric(negative))
+    negative = as.character(negative)
+
+  task = makeOneClassTask(id, data, target, weights, blocking, fixup.data, positive, negative, check.data)
   convertTaskToFDATask(task, "fdaoneclass", fd.features, fd.grids, "FDAOneClassTask",
     "FDAOneClassTaskDesc")
   }

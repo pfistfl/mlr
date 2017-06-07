@@ -53,7 +53,7 @@ predictLearner.fdaoneclass.kslad = function(.learner, .model, .newdata, ...) {
   # browser()
   p = kslad::predict.kslad(.model$learner.model, newdata = .newdata, ...)
   if (.learner$predict.type == "response") {
-    p = as.factor(as.logical(p))
+    p = as.factor(p) # as.logical(p)
     # FIXME: This does not work right now:
     # levels(p) = union(levels(p), .model$task.desc$class.levels)
   }
