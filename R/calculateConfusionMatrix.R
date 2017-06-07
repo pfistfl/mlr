@@ -51,7 +51,6 @@ calculateConfusionMatrix = function(pred, relative = FALSE, sums = FALSE) {
   } else {
     ttype = "classif"
   }
-  print(ttype)
   checkPrediction(pred, task.type = ttype, check.truth = TRUE, no.na = TRUE)
   assertFlag(relative)
   assertFlag(sums)
