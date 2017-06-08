@@ -7,7 +7,7 @@ makeRLearner.fdaoneclass.anomalous = function() {
       makeLogicalLearnerParam("normalise", default = TRUE),
       makeIntegerLearnerParam("width", lower = 0),
       makeIntegerLearnerParam("window", lower = 0),
-      makeIntegerLearnerParam(id = "n", default = 10, lower = 0, upper = Inf),
+      makeIntegerLearnerParam(id = "n", default = 10, lower = 1, upper = Inf),
       makeDiscreteLearnerParam(id = "method", default = "hdr", values = c("hdr")),
       makeLogicalLearnerParam("robust", default = TRUE),
       makeLogicalLearnerParam("plot", default = TRUE, tunable = FALSE),
@@ -68,9 +68,9 @@ predictLearner.fdaoneclass.anomalous = function(.learner, .model, .newdata, ...)
   prd = anomaly2_predict(.model$learner.model, newdata = x, ...)
 
   if (.learner$predict.type == "response") {
-    p = as.factor(as.numeric(prd$f_density <= 0.01))
+    p = as.factor(as.numeric(prd$f_density <= .model$learner.model$hdr_results$falpha))
   }
-
+  levels(p) = union(levels(p), .model$task.desc$class.levels)
   return(p)
 }
 
@@ -106,9 +106,13 @@ anomaly2 = function(x, n = 10, method = "hdr", robust = TRUE,
   scoreswNA = matrix(NA, nrow = nc, ncol = 2)
   scoreswNA[avl, ] = scores
   tmp.idx = vector(length = n)
+
+  # alpha is the fraction of anomalies in the data
+  alpha = n / nrow(x)
+
   if (method == "hdr") {
     hdrinfo = hdrcde::hdr.2d(x = scores[, 1], y = scores[, 2],
-      kde.package = "ks", prob = c(0.001, 0.01, 0.05))
+      kde.package = "ks", prob = alpha)
     tmp.idx = order(hdrinfo$fxy)[1:n]
     main = "Lowest densities on anomalies"
   }

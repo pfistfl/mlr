@@ -460,8 +460,6 @@ mmce = makeMeasure(id = "mmce", minimize = TRUE, best = 0, worst = 1,
 #' @rdname measures
 #' @format none
 measureMMCE = function(truth, response) {
-  print(response)
-  print(truth)
   mean(response != truth)
 }
 
