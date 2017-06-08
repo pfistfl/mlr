@@ -147,27 +147,28 @@ anomaly2 = function(x, n = 10, method = "hdr", robust = TRUE,
 }
 
 
-anomaly2_predict = function(anomaly_out_train, newdata, predicttype = "response"){
+anomaly2_predict = function(mod, newdata, predicttype = "response"){
 
   n = nrow(newdata)
   # Compute 2-D points from newdata
-  pca_trafo = anomaly_out_train$pca_results$loadings
-  center = anomaly_out_train$pca_results$center
-  scale = anomaly_out_train$pca_results$scale
-  x_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 1] )
-  y_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 2] )
-  test_scores = cbind(x_vec, y_vec)
+  pca_trafo = mod$pca_results$loadings
+  scaled = (t(newdata) - mod$pca_results$center) / mod$pca_results$scale
+  test_scores = t(scaled) %*% pca_trafo
+
+  # x_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 1] )
+  # y_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 2] )
+  # test_scores = cbind(x_vec, y_vec)
 
   dens_value = rep(0, n)
   for (i in seq_len(n)) {
 
-    min_x = min(which(anomaly_out_train$hdr_results$den$x >= test_scores[i, 1]))
-    min_y = min(which(anomaly_out_train$hdr_results$den$y >= test_scores[i, 2]))
+    min_x = min(which(mod$hdr_results$den$x >= test_scores[i, 1]))
+    min_y = min(which(mod$hdr_results$den$y >= test_scores[i, 2]))
 
-    if(is.infinite(min_x)) {min_x = max(which(anomaly_out_train$hdr_results$den$x <= test_scores[i, 1]))}
-    if(is.infinite(min_y)) {min_y = max(which(anomaly_out_train$hdr_results$den$y <= test_scores[i, 2]))}
+    if(is.infinite(min_x)) {min_x = max(which(mod$hdr_results$den$x <= test_scores[i, 1]))}
+    if(is.infinite(min_y)) {min_y = max(which(mod$hdr_results$den$y <= test_scores[i, 2]))}
 
-    dens_value[i] = anomaly_out_train$hdr_results$den$z[min_x, min_y]
+    dens_value[i] = mod$hdr_results$den$z[min_x, min_y]
   }
 
   names(dens_value) = seq_len(n)
