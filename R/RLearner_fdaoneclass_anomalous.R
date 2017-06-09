@@ -162,6 +162,7 @@ anomaly2_predict = function(mod, newdata, predicttype = "response"){
   dens_value = rep(0, n)
   for (i in seq_len(n)) {
 
+    # FIXME: Suppress Warning for Inf
     min_x = min(which(mod$hdr_results$den$x >= test_scores[i, 1]))
     min_y = min(which(mod$hdr_results$den$y >= test_scores[i, 2]))
 
