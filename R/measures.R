@@ -861,8 +861,13 @@ bac = makeMeasure(id = "bac", minimize = FALSE, best = 1, worst = 0,
   name = "Balanced accuracy",
   note = "Mean of true positive rate and true negative rate.",
   fun = function(task, model, pred, feats, extra.args) {
-    mean(c(tp$fun(pred = pred) / sum(pred$data$truth == pred$task.desc$positive),
-      tn$fun(pred = pred) / sum(pred$data$truth == pred$task.desc$negative)))
+    denom.positive = sum(pred$data$truth == pred$task.desc$positive)
+    denom.negative = sum(pred$data$truth == pred$task.desc$negative)
+
+    summand.positive = ifelse(denom.positive == 0, 1, tp$fun(pred = pred) / denom.positive)
+    summand.negative = ifelse(denom.negative == 0, 1, tn$fun(pred = pred) / denom.negative)
+
+    mean(c(summand.positive, summand.negative))
   }
 )
 
@@ -870,11 +875,62 @@ bac = makeMeasure(id = "bac", minimize = FALSE, best = 1, worst = 0,
 #' @rdname measures
 #' @format none
 measureBAC = function(truth, response, negative, positive) {
-  mean(c(
-    measureTP(truth, response, positive) / sum(truth == positive),
-    measureTN(truth, response, negative) / sum(truth == negative)
-  ))
+
+  denom.positive = sum(truth == positive)
+  denom.negative = sum(truth == negative)
+
+  summand.positive = ifelse(denom.positive == 0, 1, measureTP(truth, response, positive) / denom.positive)
+  summand.negative = ifelse(denom.negative == 0, 1, measureTN(truth, response, negative) / denom.negative)
+
+  mean(c(summand.positive, summand.negative))
 }
+
+
+#' @export wac
+#' @rdname measures
+#' @format none
+wac = makeMeasure(id = "wac", minimize = FALSE, best = 1, worst = 0,
+  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  name = "Weighted accuracy",
+  note = "Weighted mean of true positive rate and true negative rate. Per default weight.positive = 0.5 and therefore equals to the balanced accuracy (bac). If using wac via the performance fct, pass the weight beforehand,
+  e.g. wac$extra.args = list(weight.positive = 0.6).",
+  fun = function(task, model, pred, feats, extra.args) {
+    if (is.null(extra.args$weight.positive)) {
+      weight.positive = 0.5
+    } else {
+      weight.positive = extra.args$weight.positive
+    }
+    if (!(0 <= weight.positive & weight.positive <= 1))
+      stop("Weiht for the positive class for the weights accuracy must be an element of (0,1).")
+    weight.negative = 1 - weight.positive
+
+    denom.positive = sum(pred$data$truth == pred$task.desc$positive)
+    denom.negative = sum(pred$data$truth == pred$task.desc$negative)
+
+    summand.positive = ifelse(denom.positive == 0, 0,  weight.positive * tp$fun(pred = pred) / denom.positive)
+    summand.negative = ifelse(denom.negative == 0, 0,  weight.negative * tn$fun(pred = pred) / denom.negative)
+
+    sum(c(summand.positive, summand.negative))
+  }
+)
+
+#' @export measureWAC
+#' @rdname measures
+#' @format none
+measureWAC = function(truth, response, negative, positive, weight.positive = 0.5) {
+  if (!(0 <= weight.positive & weight.positive <= 1))
+    stop("Weiht for the positive class for the weights accuracy must be an element of (0,1).")
+  weight.negative = 1 - weight.positive
+
+  denom.positive = sum(truth == positive)
+  denom.negative = sum(truth == negative)
+
+  summand.positive = ifelse(denom.positive == 0, 0,  weight.positive * measureTP(truth, response, positive) / denom.positive)
+  summand.negative = ifelse(denom.negative == 0, 0,  weight.negative * measureTN(truth, response, negative) / denom.negative)
+
+  sum(c(summand.positive, summand.negative))
+}
+
 
 #' @export tp
 #' @rdname measures
