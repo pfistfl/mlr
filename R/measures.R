@@ -857,7 +857,7 @@ measureBrierScaled = function(probabilities, truth, negative, positive) {
 #' @rdname measures
 #' @format none
 bac = makeMeasure(id = "bac", minimize = FALSE, best = 1, worst = 0,
-  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  properties = c("oneclass", "fdaoneclass", "classif", "req.pred", "req.truth"),
   name = "Balanced accuracy",
   note = "Mean of true positive rate and true negative rate.",
   fun = function(task, model, pred, feats, extra.args) {
@@ -890,7 +890,7 @@ measureBAC = function(truth, response, negative, positive) {
 #' @rdname measures
 #' @format none
 wac = makeMeasure(id = "wac", minimize = FALSE, best = 1, worst = 0,
-  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  properties = c("oneclass", "fdaoneclass", "classif", "req.pred", "req.truth"),
   name = "Weighted accuracy",
   note = "Weighted mean of true positive rate and true negative rate. Per default weight.positive = 0.5 and therefore equals to the balanced accuracy (bac). If using wac via the performance fct, pass the weight beforehand,
   e.g. wac$extra.args = list(weight.positive = 0.6).",
@@ -1190,7 +1190,7 @@ measureMCC = function(truth, response, negative, positive) {
 #' @rdname measures
 #' @format none
 f1 = makeMeasure(id = "f1", minimize = FALSE, best = 1, worst = 0,
-  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  properties = c("oneclass", "fdaoneclass", "classif", "req.pred", "req.truth"),
   name = "F1 measure",
   note = "Defined as: 2 * tp/ (sum(truth == positive) + sum(response == positive))",
   fun = function(task, model, pred, feats, extra.args) {

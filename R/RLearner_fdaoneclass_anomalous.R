@@ -163,8 +163,8 @@ anomaly2_predict = function(mod, newdata, predicttype = "response"){
   for (i in seq_len(n)) {
 
     # FIXME: Suppress Warning for Inf
-    min_x = min(which(mod$hdr_results$den$x >= test_scores[i, 1]))
-    min_y = min(which(mod$hdr_results$den$y >= test_scores[i, 2]))
+    min_x = suppressWarnings(min(which(mod$hdr_results$den$x >= test_scores[i, 1])))
+    min_y = suppressWarnings(min(which(mod$hdr_results$den$y >= test_scores[i, 2])))
 
     if(is.infinite(min_x)) {min_x = max(which(mod$hdr_results$den$x <= test_scores[i, 1]))}
     if(is.infinite(min_y)) {min_y = max(which(mod$hdr_results$den$y <= test_scores[i, 2]))}
