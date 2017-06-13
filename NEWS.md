@@ -10,12 +10,13 @@
 * helpLearner, helpLearnerParam: open the help for a learner or get a
   description of its parameters
 
+## measures - new
+* measureBER, measureRMSLE, measureF1
+
 ## learners - general
 * unified {classif,regr,surv}.penalized{ridge,lasso,fusedlasso} into {classif,regr,surv}.penalized
-* classif.mxnet now supports probabilities
 
 ## learners - new
-* classif.mxff
 
 ## learners - removed
 * {classif,regr}.bdk: broke our API, stability issues
