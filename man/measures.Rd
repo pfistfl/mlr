@@ -76,6 +76,8 @@
 \alias{measureBrierScaled}
 \alias{bac}
 \alias{measureBAC}
+\alias{wac}
+\alias{measureWAC}
 \alias{tp}
 \alias{measureTP}
 \alias{tn}
@@ -274,6 +276,10 @@ measureBrierScaled(probabilities, truth, negative, positive)
 bac
 
 measureBAC(truth, response, negative, positive)
+
+wac
+
+measureWAC(truth, response, negative, positive, weight.positive = 0.5)
 
 tp
 

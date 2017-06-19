@@ -4,7 +4,7 @@ makeRLearner.fdaoneclass.kslad = function() {
     cl = "fdaoneclass.kslad",
     package = "kslad",
     par.set = makeParamSet(
-      makeNumericLearnerParam(id = "c.reg", lower = 0, upper = 1, default = NULL),
+      makeNumericLearnerParam(id = "c.reg", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
       makeNumericLearnerParam(id = "k", lower = 0, upper = 1, default = 0.03),
       makeNumericLearnerParam(id = "l", lower = 0, upper = 1, default = 0.2),
       makeDiscreteLearnerParam(id = "step", default = "pegasos", values = c("pegasos", "sqrt", "user")),
