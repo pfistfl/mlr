@@ -28,7 +28,7 @@ makeRLearner.fdaoneclass.kslad = function() {
     ),
     properties =  c("oneclass", "numerics"),
     name = "Kernelized Anomaly Detection and Shapelet Learning",
-    short.name = "fdaoneclass klad",
+    short.name = "fdaoneclass kSlad",
     callees = "kslad"
   )
 }
