@@ -37,8 +37,8 @@ makeFDAOneClassTask = function(id = deparse(substitute(data)), data, target,
     "FDAOneClassTaskDesc")
   }
 
-makeFDAOneClassTaskDesc = function(id, data, target, weights, blocking, positive, fd.features, fd.grids) {
-  new.td = makeOneClassTaskDesc(id, data, target, weights, blocking, positive)
+makeFDAOneClassTaskDesc = function(id, data, target, weights, blocking, fd.features, fd.grids, positive, negative) {
+  new.td = makeOneClassTaskDesc(id, data, target, weights, blocking, positive, negative)
   new.td$type = "fdaoneclass"
   # we cannot call getTaskFeatureNames here, task is not fully constructed
   feat.remain = setdiff(names(data), target)
