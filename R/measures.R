@@ -1063,7 +1063,7 @@ measureTNR = function(truth, response, negative) {
 #' @rdname measures
 #' @format none
 fpr = makeMeasure(id = "fpr", minimize = TRUE, best = 0, worst = 1,
-  properties = c("oneclass", "classif", "fdaclassif", "req.pred", "req.truth"),
+  properties = c("oneclass", "classif", "fdaclassif", "fdaoneclass", "req.pred", "req.truth"),
   name = "False positive rate",
   note = "Percentage of misclassified observations in the positive class. Also called false alarm rate or fall-out.",
   fun = function(task, model, pred, feats, extra.args) {
@@ -1082,7 +1082,7 @@ measureFPR = function(truth, response, negative, positive) {
 #' @rdname measures
 #' @format none
 fnr = makeMeasure(id = "fnr", minimize = TRUE, best = 0, worst = 1,
-  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  properties = c("oneclass", "classif","fdaoneclass", "fdaclassif", "req.pred", "req.truth"),
   name = "False negative rate",
   note = "Percentage of misclassified observations in the negative class.",
   fun = function(task, model, pred, feats, extra.args) {
@@ -1101,7 +1101,7 @@ measureFNR = function(truth, response, negative, positive) {
 #' @rdname measures
 #' @format none
 ppv = makeMeasure(id = "ppv", minimize = FALSE, best = 1, worst = 0,
-  properties = c("oneclass", "classif", "req.pred", "req.truth"),
+  properties = c("oneclass", "classif", "req.pred", "req.truth", "fdaoneclass"),
   name = "Positive predictive value",
   note = "Defined as: tp / (tp + number of fp). Also called precision. If the denominator is 0, PPV is set to be either 1 or 0 depending on whether the highest probability prediction is positive (1) or negative (0).",
   fun = function(task, model, pred, feats, extra.args) {
