@@ -9,7 +9,7 @@ makeRLearner.fdaoneclass.slad = function() {
       makeNumericLearnerParam(id = "l", lower = 0, upper = 1, default = 0.2),
       makeDiscreteLearnerParam(id = "step", default = "pegasos", values = c("pegasos", "sqrt", "user")),
       makeUntypedLearnerParam("step.size", default = NULL, requires = quote(step == "user")),
-      makeIntegerLearnerParam(id = "max.iter", lower = 0L, upper = Inf, default = 1000L),
+      makeIntegerLearnerParam(id = "max.iter", lower = 0L, upper = Inf, default = 500L),
       makeDiscreteLearnerParam(id = "init", default = "kmeans", values = c("kmeans", "random", "user")),
       makeUntypedLearnerParam("init.shapes", default = NULL, requires = quote(init == "user")),
       makeDiscreteLearnerParam("loss", default = "linear", values = c("linear", "squared")),
