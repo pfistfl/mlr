@@ -5,6 +5,7 @@ makeRLearner.fdaoneclass.kslad = function() {
     package = "kslad",
     par.set = makeParamSet(
       makeNumericLearnerParam(id = "c.reg", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
+      makeNumericLearnerParam(id = "anomaly.rate", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
       makeNumericLearnerParam(id = "k", lower = 0, upper = 1, default = 0.02),
       makeNumericLearnerParam(id = "l", lower = 0, upper = 1, default = 0.2),
       makeDiscreteLearnerParam(id = "step", default = "pegasos-momentum", values = c("pegasos", "pegasos-momentum", "sqrt", "user")),
@@ -13,8 +14,7 @@ makeRLearner.fdaoneclass.kslad = function() {
       makeDiscreteLearnerParam(id = "init", default = "kmeans", values = c("kmeans", "random", "user")),
       makeUntypedLearnerParam("init.shapes", default = NULL, requires = quote(init == "user")),
       makeNumericLearnerParam("convergence.eps", default = 10^-3, upper = Inf, lower = 0),
-      makeLogicalLearnerParam("show.info", default = FALSE) ,
-      makeDiscreteLearnerParam("qpsolver", default = "ipop", values = c("ipop", "ipopCpp")),
+      makeLogicalLearnerParam("show.info", default = FALSE, tunable = FALSE),
       makeDiscreteLearnerParam(id = "kernel", default = "rbfdot",
         values = c("vanilladot", "polydot", "rbfdot", "tanhdot", "laplacedot")),
       makeNumericLearnerParam(id = "sigma", lower = 0, upper = Inf, default = NULL,
@@ -49,8 +49,6 @@ trainLearner.fdaoneclass.kslad = function(.learner, .task, .subset, .weights = N
 
 #' @export
 predictLearner.fdaoneclass.kslad = function(.learner, .model, .newdata, ...) {
-  # kslad currently can't predict probabilities only response
-  # browser()
   p = kslad::predict.kslad(.model$learner.model, newdata = .newdata, ...)
   if (.learner$predict.type == "response") {
     p = as.factor(p) # as.logical(p)

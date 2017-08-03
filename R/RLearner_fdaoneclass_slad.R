@@ -5,6 +5,7 @@ makeRLearner.fdaoneclass.slad = function() {
     package = "kslad",
     par.set = makeParamSet(
       makeNumericLearnerParam(id = "c.reg", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
+      makeNumericLearnerParam(id = "anomaly.rate", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
       makeNumericLearnerParam(id = "k", lower = 0, upper = 1, default = 0.02),
       makeNumericLearnerParam(id = "l", lower = 0, upper = 1, default = 0.2),
       makeDiscreteLearnerParam(id = "step", default = "pegasos", values = c("pegasos", "sqrt", "pegasos-momentum", "user")),
@@ -14,8 +15,7 @@ makeRLearner.fdaoneclass.slad = function() {
       makeUntypedLearnerParam("init.shapes", default = NULL, requires = quote(init == "user")),
       makeDiscreteLearnerParam("loss", default = "linear", values = c("linear", "squared")),
       makeNumericLearnerParam("convergence.eps", default = 10^-3, upper = Inf, lower = 0),
-      makeLogicalLearnerParam("show.info", default = FALSE) ,
-      makeDiscreteLearnerParam("qpsolver", default = "ipop", values = c("ipop", "ipopCpp"))
+      makeLogicalLearnerParam("show.info", default = FALSE, tunable = FALSE)
     ),
     properties =  c("oneclass", "numerics"),
     name = "Linear Anomaly Detection and Shapelet Learning",
