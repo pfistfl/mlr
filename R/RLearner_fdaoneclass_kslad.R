@@ -8,6 +8,7 @@ makeRLearner.fdaoneclass.kslad = function() {
       makeNumericLearnerParam(id = "anomaly.rate", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
       makeNumericLearnerParam(id = "k", lower = 0, upper = 1, default = 0.02),
       makeNumericLearnerParam(id = "l", lower = 0, upper = 1, default = 0.2),
+      makeNumericLearnerParam(id = "c2", lower = 0, upper = 10, default = 1L),
       makeDiscreteLearnerParam(id = "step", default = "pegasos-momentum", values = c("pegasos", "pegasos-momentum", "sqrt", "user")),
       makeUntypedLearnerParam("step.size", default = NULL, requires = quote(step == "user")),
       makeIntegerLearnerParam(id = "max.iter", lower = 0L, upper = Inf, default = 500L),
