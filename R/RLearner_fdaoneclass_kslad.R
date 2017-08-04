@@ -49,7 +49,7 @@ trainLearner.fdaoneclass.kslad = function(.learner, .task, .subset, .weights = N
 
 #' @export
 predictLearner.fdaoneclass.kslad = function(.learner, .model, .newdata, ...) {
-  p = kslad::predict.kslad(.model$learner.model, newdata = .newdata, ...)
+  p = predict(.model$learner.model, newdata = .newdata, ...)
   if (.learner$predict.type == "response") {
     p = as.factor(p) # as.logical(p)
     levels(p) = union(levels(p), .model$task.desc$class.levels)
