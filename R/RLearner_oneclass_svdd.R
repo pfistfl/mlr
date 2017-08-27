@@ -32,7 +32,7 @@ trainLearner.oneclass.svdd = function(.learner, .task, .subset, .weights = NULL,
 
   # Handle kernel parameters
   kpar = learnerArgsToControl(list, degree, offset, scale, sigma)
-  if (base::length(kpar) == 0L) {
+  if (length(kpar) == 0L) {
     kpar = list()
   }
   kslad::svdd(data = d, kpars = kpar, ...)
