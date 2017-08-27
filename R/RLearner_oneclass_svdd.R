@@ -9,7 +9,7 @@ makeRLearner.oneclass.svdd = function() {
       makeNumericLearnerParam(id = "c.reg", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
       makeNumericLearnerParam(id = "anomaly.rate", lower = 0, upper = 1, default = NULL, special.vals = list(NULL)),
       makeNumericLearnerParam(id = "sigma",
-        lower = 0, requires = quote(kernel %in% c("rbfdot", "laplacedot")), default = NULL, upper = Inf),
+        lower = 0, requires = quote(kernel %in% c("rbfdot", "laplacedot")), default = NULL, upper = Inf, special.vals = list(NULL)),
       makeIntegerLearnerParam(id = "degree", default = 3L, lower = 1L,
         requires = quote(kernel %in% c("polydot"))),
       makeNumericLearnerParam(id = "scale", default = 1, lower = 0, upper = Inf,
