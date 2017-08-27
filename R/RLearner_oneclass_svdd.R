@@ -14,7 +14,7 @@ makeRLearner.oneclass.svdd = function() {
         requires = quote(kernel %in% c("polydot"))),
       makeNumericLearnerParam(id = "scale", default = 1, lower = 0, upper = Inf,
         requires = quote(kernel %in% c("polydot", "tanhdot"))),
-      makeNumericLearnerParam(id = "offset", default = 1, upper = Inf, lower = -Inf
+      makeNumericLearnerParam(id = "offset", default = 1, upper = Inf, lower = -Inf,
         requires = quote(kernel %in% c("polydot", "tanhdot")))
     ),
     properties =  c("oneclass", "numerics"),
