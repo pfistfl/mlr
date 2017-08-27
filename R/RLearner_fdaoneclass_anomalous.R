@@ -48,8 +48,7 @@ trainLearner.fdaoneclass.anomalous = function(.learner, .task, .subset, .weights
 
 #' @export
 predictLearner.fdaoneclass.anomalous = function(.learner, .model, .newdata, ...) {
-
-  print((head(.newdata)))
+	
   # Get args from training
   args = .model$learner.model$tsmargs
   # Iterate over all functional features, extract and cbind
@@ -154,10 +153,6 @@ anomaly2_predict = function(mod, newdata, predicttype = "response"){
   pca_trafo = mod$pca_results$loadings
   scaled = (t(newdata) - mod$pca_results$center) / mod$pca_results$scale
   test_scores = t(scaled) %*% pca_trafo
-
-  # x_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 1] )
-  # y_vec = apply(newdata, 1, function(x) - ((x - center) / scale) %*% pca_trafo[, 2] )
-  # test_scores = cbind(x_vec, y_vec)
 
   dens_value = rep(0, n)
   for (i in seq_len(n)) {
