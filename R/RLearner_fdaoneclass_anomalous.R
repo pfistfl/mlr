@@ -48,7 +48,7 @@ trainLearner.fdaoneclass.anomalous = function(.learner, .task, .subset, .weights
 
 #' @export
 predictLearner.fdaoneclass.anomalous = function(.learner, .model, .newdata, ...) {
-	
+
   # Get args from training
   args = .model$learner.model$tsmargs
   # Iterate over all functional features, extract and cbind
@@ -115,31 +115,31 @@ anomaly2 = function(x, n = 10, method = "hdr", robust = TRUE,
     tmp.idx = order(hdrinfo$fxy)[1:n]
     main = "Lowest densities on anomalies"
   }
-
   idx = avl[tmp.idx] # Put back with NA
-  if (plot) {
-    if (missing(col)) {
-      col = c("grey", "darkblue")
-    } else {
-      lencol = length(col)
-      if (lencol == 1L) {
-        col = rep(col, 2)
-      } else {
-        col = unique(col)[1:2]
-      }
-    }
-    xrange = range(scores[, 1], na.rm = TRUE)
-    yrange = range(scores[, 2], na.rm = TRUE)
-    plot(x = scores[-tmp.idx, 1], y = scores[-tmp.idx, 2],
-      pch = 19, col = col[1L], xlab = "PC1", ylab = "PC2", main = main,
-      xlim = xrange, ylim = yrange)
-    points(scores[tmp.idx, 1], scores[tmp.idx, 2],
-      col = col[2L], pch = 17)
-    if (labels) {
-      text(scores[tmp.idx, 1] + 0.3, scores[tmp.idx, 2],
-        col = col[2L], label = 1:length(idx), cex = 1.2)
-    }
-  }
+
+  # if (plot) {
+  #   if (missing(col)) {
+  #     col = c("grey", "darkblue")
+  #   } else {
+  #     lencol = length(col)
+  #     if (lencol == 1L) {
+  #       col = rep(col, 2)
+  #     } else {
+  #       col = unique(col)[1:2]
+  #     }
+  #   }
+  #   xrange = range(scores[, 1], na.rm = TRUE)
+  #   yrange = range(scores[, 2], na.rm = TRUE)
+  #   plot(x = scores[-tmp.idx, 1], y = scores[-tmp.idx, 2],
+  #     pch = 19, col = col[1L], xlab = "PC1", ylab = "PC2", main = main,
+  #     xlim = xrange, ylim = yrange)
+  #   points(scores[tmp.idx, 1], scores[tmp.idx, 2],
+  #     col = col[2L], pch = 17)
+  #   if (labels) {
+  #     text(scores[tmp.idx, 1] + 0.3, scores[tmp.idx, 2],
+  #       col = col[2L], label = 1:length(idx), cex = 1.2)
+  #   }
+  # }
 
   return(list(index = idx, scores = scoreswNA, hdr_results = hdrinfo,
     pca_results=rbt.pca))
