@@ -63,13 +63,16 @@ predict.WrappedModel = function(object, task, newdata, subset = NULL, ...) {
   if (missing(newdata)) {
     # if learner does not support functional, we convert to df cols
     if (hasLearnerProperties(object$learner, "functionals") ||
-      hasLearnerProperties(object$learner, "single.functional")) {
+        hasLearnerProperties(object$learner, "single.functional")) {
       newdata = getTaskData(task, subset, functionals.as = "matrix")
     } else {
       newdata = getTaskData(task, subset, functionals.as = "dfcols")
     }
   } else {
     newdata = newdata[subset, , drop = FALSE]
+    if (!(hasLearnerProperties(object$learner, "functionals") ||
+          hasLearnerProperties(object$learner, "single.functional"))) {
+      newdata = functionalToNormalData(newdata)
   }
 
   # if we saved a model and loaded it later just for prediction this is necessary
