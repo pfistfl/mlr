@@ -71,7 +71,7 @@ predict.WrappedModel = function(object, task, newdata, subset = NULL, ...) {
   } else {
     newdata = newdata[subset, , drop = FALSE]
     if (!(hasLearnerProperties(object$learner, "functionals") ||
-          hasLearnerProperties(object$learner, "single.functional"))) {
+          hasLearnerProperties(object$learner, "single.functional")))
       newdata = functionalToNormalData(newdata)
   }
 
